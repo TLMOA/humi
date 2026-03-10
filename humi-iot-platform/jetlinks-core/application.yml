@@ -1,0 +1,94 @@
+# 应用基础配置
+spring:
+  application:
+    name: humi-jetlinks-core
+  
+  # JetLinks主业务数据库 (PostgreSQL)
+  datasource:
+    jetlinks:
+      url: jdbc:postgresql://localhost:5432/jetlinks
+      username: jetlinks
+      password: jetlinks
+      driver-class-name: org.postgresql.Driver
+      type: com.alibaba.druid.pool.DruidDataSource
+    
+    # TDengine 时序数据库连接
+    tdengine:
+      url: jdbc:TAOS://localhost:6030/humi_iot
+      username: root
+      password: taosdata
+      driver-class-name: com.taosdata.jdbc.TSDBDriver
+      type: com.alibaba.druid.pool.DruidDataSource
+      # 连接池配置
+      druid:
+        initial-size: 5
+        min-idle: 5
+        max-active: 20
+        validation-query: SELECT 1
+  
+  # JPA配置
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  
+  # Redis配置
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+    timeout: 3000ms
+  
+jetlinks:
+  # 协议相关配置
+  protocols:
+    alink:
+      enabled: true
+      version: "1.0"
+  
+  # 消息推送配置
+  device:
+    message:
+      pusher:
+        # WebSocket推送配置
+        websocket:
+          enabled: true
+          path: /device/message
+        # MQTT推送配置
+        mqtt:
+          enabled: true
+          concurrent-subscribers: 64
+  
+  # MQTT Broker配置 (连接EMQX)
+  mqtt:
+    server:
+      uris:
+        - tcp://localhost:1883
+      username: admin
+      password: public
+      client-id: humi-jetlinks-${random.uuid}
+  
+# TDengine SQL配置
+tdengine:
+  # 默认数据存储超时时间（秒），超过此时间自动删除数据
+  keep: 3650
+  # 数据压缩配置
+  comp: 2
+  # 查询超时时间（毫秒）
+  query-timeout: 30000
+  
+# 日志配置
+logging:
+  level:
+    com.humi.jetlinks: DEBUG
+    org.jetlinks: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/humi-jetlinks.log
+    max-size: 10MB
+    max-history: 30

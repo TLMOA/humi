@@ -1,0 +1,49 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:13
+    container_name: humi-postgres
+    environment:
+      POSTGRES_DB: jetlinks
+      POSTGRES_USER: jetlinks
+      POSTGRES_PASSWORD: jetlinks
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  tdengine:
+    image: tdengine/tdengine:latest
+    container_name: humi-tdengine
+    environment:
+      TAOS_FQDN: "tdengine"
+    ports:
+      - "6030:6030"
+      - "6041:6041"
+      - "6043-6049:6043-6049"
+      - "6043-6049:6043-6049/udp"
+    volumes:
+      - tdengine-data:/var/lib/taos
+      - tdengine-log:/var/log/taos
+
+  redis:
+    image: redis:7-alpine
+    container_name: humi-redis
+    ports:
+      - "6379:6379"
+    
+  emqx:
+    image: emqx:5.4.1
+    container_name: humi-emqx
+    ports:
+      - "1883:1883"  # MQTT协议
+      - "8083:8083"  # WebSocket
+      - "8081:8081"  # 管理后台
+    environment:
+      EMQX_DASHBOARD__DEFAULT_USERNAME: admin
+      EMQX_DASHBOARD__DEFAULT_PASSWORD: public
+
+volumes:
+  postgres-data:
+  tdengine-data:
+  tdengine-log:

@@ -1,0 +1,25 @@
+spring:
+datasource:
+jetlinks:
+url: jdbc:postgresql://localhost:5432/jetlinks
+username: jetlinks
+password: jetlinks
+driver-class-name: org.postgresql.Driver
+tdengine: # TDengine 数据源配置
+url: jdbc:TAOS-RS://localhost:6041/humi_iot?charset=UTF-8&locale=en_US.UTF-8
+username: root
+password: taosdata
+driver-class-name: com.taosdata.jdbc.rs.RestfulDriver
+redis:
+host: localhost
+port: 6379
+database: 0
+
+jetlinks:
+protocol:
+mqtt:
+client-id: humi_platform
+host: localhost
+port: 1883
+username: emqx
+password: public

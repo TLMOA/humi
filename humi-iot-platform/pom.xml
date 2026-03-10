@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- 项目GAV坐标 -->
+    <groupId>com.humi</groupId>
+    <artifactId>humi-iot-platform</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <!-- 项目信息 -->
+    <name>忽米物联网平台</name>
+    <description>基于JetLinks的物联网核心平台，提供设备连接、数据采集、规则引擎与可视化大屏服务。</description>
+    <url>https://iot.humi.com</url>
+
+    <!-- 组织信息 -->
+    <organization>
+        <name>忽米网络科技有限公司</name>
+        <url>https://www.humi.com</url>
+    </organization>
+
+    <!-- 许可证 -->
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <!-- 开发者信息 -->
+    <developers>
+        <developer>
+            <name>忽米物联团队</name>
+            <email>iot-dev@humi.com</email>
+            <organization>忽米网络科技有限公司</organization>
+            <organizationUrl>https://www.humi.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <!-- 子模块声明 (根据您的实际目录调整) -->
+    <modules>
+        <module>humi-dependencies</module>
+        <module>jetlinks-core</module>
+        <module>monitor-dashboard</module>
+        <module>data-governance</module>
+        <module>extension-api</module>
+        <module>humi-standalone</module>
+    </modules>
+
+    <!-- 属性定义 (关键修改：调整为Java 8兼容版本) -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- 关键修改：Java版本调整为1.8 -->
+        <java.version>1.8</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <!-- 关键修改：使用与Java 8兼容的Spring Boot 2.7.x -->
+        <spring-boot.version>2.7.18</spring-boot.version>
+        <!-- 关键修改：使用与Spring Boot 2.7.x兼容的JetLinks社区版版本 -->
+        <jetlinks.version>2.1.0</jetlinks.version>
+        <druid.version>1.2.18</druid.version>
+        <tdengine-driver.version>3.2.5</tdengine-driver.version>
+    </properties>
+
+    <!-- 依赖管理 -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- Spring Boot Starters (版本锁定) -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <!-- 版本同步修改 -->
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- JetLinks IoT 核心依赖 (社区版) -->
+            <dependency>
+                <groupId>org.jetlinks</groupId>
+                <artifactId>jetlinks-core</artifactId>
+                <version>${jetlinks.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jetlinks</groupId>
+                <artifactId>jetlinks-protocol-core</artifactId>
+                <version>${jetlinks.version}</version>
+            </dependency>
+            <!-- 注意：社区版可能没有 `jetlinks-protocols` 和 `jetlinks-rule-engine` 这两个artifactId，
+                 或它们包含在 `jetlinks-community` 聚合包中。此处先保留，若下载失败需调整。 -->
+
+            <!-- 数据库连接池 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+
+            <!-- TDengine 驱动程序 -->
+            <dependency>
+                <groupId>com.taosdata.jdbc</groupId>
+                <artifactId>taos-jdbcdriver</artifactId>
+                <version>${tdengine-driver.version}</version>
+            </dependency>
+
+            <!-- 其他公共依赖版本锁定 -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.30</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- 公共依赖 (所有子模块继承) -->
+    <dependencies>
+        <!-- 开发工具链 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <!-- 构建配置 -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- Maven 编译插件 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.11.0</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>1.18.30</version>
+                            </path>
+                        </annotationProcessorPaths>
+                    </configuration>
+                </plugin>
+
+                <!-- Spring Boot Maven 插件 -->
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <!-- 仓库配置 (与文档一致，确保能下载到JetLinks和TDengine依赖) -->
+    <repositories>
+        <repository>
+        <id>aliyun-maven</id>
+        <name>阿里云公共仓库</name>
+        <url>https://maven.aliyun.com/repository/public</url>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+       
+       
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>aliyun-plugin</id>
+            <name>阿里云插件仓库</name>
+            <url>https://maven.aliyun.com/repository/public</url>
+        </pluginRepository>
+    </pluginRepositories>
+</project>
